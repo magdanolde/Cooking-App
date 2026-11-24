@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DeleteRecipeButton } from '@/components/DeleteRecipeButton';
-import { BackIcon, LinkIcon } from '@/components/icons';
+import { BackIcon, CalendarIcon, LinkIcon } from '@/components/icons';
 import { ScaledIngredients } from '@/components/ScaledIngredients';
 import { formatMinutes, getRecipe } from '@/lib/recipes';
 
@@ -12,8 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: recipe?.title ?? 'Recipe' };
 }
 
-export default async function RecipePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function RecipePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ servings?: string }>;
+}) {
   const recipe = await getRecipe(Number((await params).id));
+  const planned = Number((await searchParams).servings) || null;
   if (!recipe) notFound();
 
   let host = '';
@@ -69,9 +76,13 @@ export default async function RecipePage({ params }: { params: Promise<{ id: str
             ))}
           </div>
         )}
+        <Link href={`/plan/add?recipe=${recipe.id}`} className="btn btn-primary btn-block">
+          <CalendarIcon size={20} />
+          Add to week plan
+        </Link>
       </section>
 
-      <ScaledIngredients ingredients={recipe.ingredients} servings={recipe.servings} />
+      <ScaledIngredients ingredients={recipe.ingredients} servings={recipe.servings} initialServings={planned} />
 
       {recipe.steps.length > 0 && (
         <section className="stack" aria-labelledby="steps-h">

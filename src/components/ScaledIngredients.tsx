@@ -17,8 +17,19 @@ import { MinusIcon, PencilIcon, PlusIcon } from './icons';
  * Ingredient list with scaling: change servings with +/-, or tap an ingredient
  * and enter the amount you have – everything else is recalculated.
  */
-export function ScaledIngredients({ ingredients, servings }: { ingredients: Ingredient[]; servings: number | null }) {
-  const [factor, setFactor] = useState(1);
+export function ScaledIngredients({
+  ingredients,
+  servings,
+  initialServings,
+}: {
+  ingredients: Ingredient[];
+  servings: number | null;
+  /** e.g. opened from the week plan with 6 planned servings */
+  initialServings?: number | null;
+}) {
+  const [factor, setFactor] = useState(() =>
+    servings && initialServings && initialServings > 0 ? initialServings / servings : 1,
+  );
   const [anchor, setAnchor] = useState<string | null>(null);
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [draft, setDraft] = useState('');

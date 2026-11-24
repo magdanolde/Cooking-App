@@ -81,3 +81,20 @@ export const CheckCircleIcon = ({ size = 20 }: P) => (
     <path d="m8 12.5 2.8 2.8L16.5 9.5" />
   </svg>
 );
+export const ForwardIcon = ({ size = 20 }: P) => (
+  <svg {...base(size)} strokeWidth={2.2}>
+    <path d="m9 5 7 7-7 7" />
+  </svg>
+);
+export const ListIcon = ({ size = 20 }: P) => (
+  <svg {...base(size)}>
+    <path d="M9 6h11M9 12h11M9 18h11" />
+    <path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2" />
+  </svg>
+);
+export const CopyIcon = ({ size = 18 }: P) => (
+  <svg {...base(size)}>
+    <rect x="8" y="8" width="12" height="12" rx="2" />
+    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+  </svg>
+);

@@ -12,8 +12,8 @@ Built with Next.js, a free Neon Postgres database and free Vercel hosting.
 - **Search.** Searches titles, ingredients and tags, with tag filter chips.
 - **Scaling.** Use the servings +/− buttons, or tap an ingredient and enter the amount you have. "Prise" and "Msp." stay unchanged.
 - **Phone install.** It can be added to your phone's home screen.
-
-Coming next: the week plan and the shopping list. The database tables and the shopping-list calculation are already included and tested.
+- **Week plan.** Lunch and dinner for each day, a different number of servings per meal, and a leftovers option. You can add meals from the plan or from any recipe.
+- **Shopping list.** Built from the week's meals at their planned servings. Matching items are added up, leftovers aren't counted, and spices and basics go under "Check at home". You can tick items off (saved per week), add your own items and copy the list as text.
 
 ## Put it online (no installs needed)
 
@@ -53,7 +53,8 @@ To copy the database address from Vercel: `npx vercel link`, then `npx vercel en
 | `src/lib/validate.ts` | Checks form data before saving |
 | `src/lib/recipes.ts` | Database queries |
 | `src/db/schema.ts`, `db/schema.sql` | Database tables (same thing in two forms) |
-| `src/app/` | Pages: list, recipe, new/edit, login, week plan (placeholder) |
+| `src/app/` | Pages: list, recipe, new/edit, login, week plan, shopping list |
+| `src/lib/plan.ts`, `src/lib/dates.ts` | Week plan data and date helpers |
 | `src/components/` | Recipe form, scalable ingredient list, search box, navigation |
 | `src/middleware.ts` | Password check |
 | `tests/` | Unit tests (`npm test`) |
