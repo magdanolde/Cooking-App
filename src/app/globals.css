@@ -17,8 +17,8 @@
   --scaled-ink: #7a2c08;
   --danger: #b42318;
   --radius: 14px;
-  --font-display: system-ui, sans-serif;
-  --font-body: system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }

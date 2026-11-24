@@ -1,9 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import './globals.css';
-
-const display = Bricolage_Grotesque({ subsets: ['latin'], weight: ['600', '700'], variable: '--font-display' });
-const body = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-body' });
 
 export const metadata: Metadata = {
   title: 'Recipes',
@@ -17,9 +13,18 @@ export const viewport: Viewport = {
   themeColor: '#F3F8F2',
 };
 
+// Fonts load in the browser from Google Fonts (no download during the build).
+const FONTS =
+  'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={FONTS} />
+      </head>
       <body>{children}</body>
     </html>
   );
