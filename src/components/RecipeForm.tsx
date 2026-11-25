@@ -33,7 +33,6 @@ export function RecipeForm({ initial, id, submitLabel = 'Save recipe' }: { initi
   const [servings, setServings] = useState(numText(initial.servings));
   const [prep, setPrep] = useState(numText(initial.prepMinutes));
   const [cook, setCook] = useState(numText(initial.cookMinutes));
-  const [tags, setTags] = useState(initial.tags.join(', '));
   const [notes, setNotes] = useState(initial.notes ?? '');
   const [rows, setRows] = useState<Row[]>(() =>
     initial.ingredients.length ? initial.ingredients.map(toRow) : [emptyRow(), emptyRow(), emptyRow()],
@@ -81,13 +80,13 @@ export function RecipeForm({ initial, id, submitLabel = 'Save recipe' }: { initi
       cookMinutes: cook.trim() || null,
       // Imported recipes sometimes only have a total time; keep it unless prep/cook are filled in
       totalMinutes: !prep.trim() && !cook.trim() ? (initial.totalMinutes ?? null) : null,
-      tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
+      tags: [],
       notes,
       ingredients,
       steps: steps.map((s) => s.text.trim()).filter(Boolean),
     };
     return { payload: JSON.stringify(payload), problem };
-  }, [rows, steps, title, sourceUrl, servings, prep, cook, tags, notes, initial.totalMinutes]);
+  }, [rows, steps, title, sourceUrl, servings, prep, cook, notes, initial.totalMinutes]);
 
   const updateRow = (key: string, patch: Partial<Row>) =>
     setRows((rs) => rs.map((r) => (r.key === key ? { ...r, ...patch } : r)));
@@ -269,11 +268,6 @@ export function RecipeForm({ initial, id, submitLabel = 'Save recipe' }: { initi
           </button>
         </div>
       </section>
-
-      <label className="field">
-        <span className="label">Tags (separated by commas)</span>
-        <input className="input" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Main course, Vegetarian, Quick" />
-      </label>
 
       <label className="field">
         <span className="label">Source link</span>

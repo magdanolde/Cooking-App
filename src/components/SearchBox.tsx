@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { SearchIcon } from './icons';
 
 /** Updates ?q= in the address bar while typing (after a short pause). */
-export function SearchBox({ initial, tag }: { initial: string; tag?: string }) {
+export function SearchBox({ initial }: { initial: string }) {
   const router = useRouter();
   const [value, setValue] = useState(initial);
   const first = useRef(true);
@@ -18,12 +18,11 @@ export function SearchBox({ initial, tag }: { initial: string; tag?: string }) {
     const t = setTimeout(() => {
       const params = new URLSearchParams();
       if (value.trim()) params.set('q', value.trim());
-      if (tag) params.set('tag', tag);
       const qs = params.toString();
       router.replace(qs ? `/?${qs}` : '/', { scroll: false });
     }, 250);
     return () => clearTimeout(t);
-  }, [value, tag, router]);
+  }, [value, router]);
 
   return (
     <form className="search" role="search" action="/" onSubmit={(e) => e.preventDefault()}>

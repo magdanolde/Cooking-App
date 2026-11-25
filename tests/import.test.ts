@@ -30,7 +30,7 @@ test('finds the recipe inside @graph and maps all fields', () => {
   assert.equal(r.ingredients[0].name, 'Rindergulasch');
   assert.equal(r.ingredients[2].note, 'alternativ Pflanzenöl');
   assert.deepEqual(r.steps, ['Fleisch in Würfel schneiden.', 'Mit Rotwein ablöschen.', 'Ca. 90 Minuten schmoren – fertig.']);
-  assert.deepEqual(r.tags, ['Hauptgerichte', 'Fleisch', 'Winter']);
+  assert.deepEqual(r.tags, []); // categories are not imported
 });
 
 test('returns null when a page has no recipe data', () => {

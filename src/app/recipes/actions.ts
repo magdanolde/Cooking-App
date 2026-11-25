@@ -34,7 +34,7 @@ export async function saveRecipeAction(_prev: SaveState, formData: FormData): Pr
 
   revalidatePath('/');
   revalidatePath(`/recipes/${id}`);
-  redirect(`/recipes/${id}`);
+  redirect(`/recipes/${id}?saved=1`);
 }
 
 export async function deleteRecipeAction(formData: FormData): Promise<void> {

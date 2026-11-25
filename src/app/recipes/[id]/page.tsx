@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DeleteRecipeButton } from '@/components/DeleteRecipeButton';
-import { BackIcon, CalendarIcon, LinkIcon } from '@/components/icons';
+import { BackIcon, CalendarIcon, CheckCircleIcon, LinkIcon } from '@/components/icons';
 import { ScaledIngredients } from '@/components/ScaledIngredients';
 import { formatMinutes, getRecipe } from '@/lib/recipes';
 
@@ -17,10 +17,12 @@ export default async function RecipePage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ servings?: string }>;
+  searchParams: Promise<{ servings?: string; saved?: string }>;
 }) {
   const recipe = await getRecipe(Number((await params).id));
-  const planned = Number((await searchParams).servings) || null;
+  const sp = await searchParams;
+  const planned = Number(sp.servings) || null;
+  const justSaved = sp.saved === '1';
   if (!recipe) notFound();
 
   let host = '';
@@ -49,6 +51,18 @@ export default async function RecipePage({
         </Link>
       </div>
 
+      {justSaved && (
+        <div className="saved-banner" role="status">
+          <span className="row" style={{ gap: 8 }}>
+            <CheckCircleIcon />
+            <strong>Recipe saved</strong>
+          </span>
+          <Link href="/" className="btn btn-primary">
+            Back to all recipes
+          </Link>
+        </div>
+      )}
+
       <section className="stack">
         <h1 className="h1 h1-sm">{recipe.title}</h1>
         {recipe.sourceUrl && (
@@ -64,15 +78,6 @@ export default async function RecipePage({
                 <div className="stat-label">{label}</div>
                 <div className="stat-value">{formatMinutes(v)}</div>
               </div>
-            ))}
-          </div>
-        )}
-        {recipe.tags.length > 0 && (
-          <div className="tags">
-            {recipe.tags.map((t) => (
-              <Link key={t} href={`/?tag=${encodeURIComponent(t)}`} className="tag" style={{ textDecoration: 'none' }}>
-                {t}
-              </Link>
             ))}
           </div>
         )}

@@ -165,12 +165,6 @@ export function instructionsToSteps(v: Json | undefined): string[] {
   return [];
 }
 
-function listOf(v: Json | undefined): string[] {
-  if (typeof v === 'string') return v.split(',').map((s) => cleanText(s)).filter(Boolean);
-  if (Array.isArray(v)) return v.flatMap((x) => listOf(x));
-  return [];
-}
-
 export function recipeFromNode(node: JsonObject, sourceUrl: string | null): RecipeDraft {
   const rawIngredients = Array.isArray(node.recipeIngredient)
     ? node.recipeIngredient
@@ -186,15 +180,6 @@ export function recipeFromNode(node: JsonObject, sourceUrl: string | null): Reci
   const cook = parseDuration(node.cookTime);
   const total = parseDuration(node.totalTime) ?? (prep || cook ? (prep ?? 0) + (cook ?? 0) : null);
 
-  const seen = new Set<string>();
-  const tags = [...listOf(node.recipeCategory), ...listOf(node.recipeCuisine), ...listOf(node.keywords)]
-    .filter((t) => {
-      const k = t.toLowerCase();
-      if (seen.has(k) || t.length > 30) return false;
-      seen.add(k);
-      return true;
-    })
-    .slice(0, 8);
 
   return {
     title: textOf(node.name) || 'Untitled recipe',
@@ -203,7 +188,7 @@ export function recipeFromNode(node: JsonObject, sourceUrl: string | null): Reci
     prepMinutes: prep,
     cookMinutes: cook,
     totalMinutes: total,
-    tags,
+    tags: [], // categories are not used in this app
     notes: '',
     ingredients,
     steps: instructionsToSteps(node.recipeInstructions),

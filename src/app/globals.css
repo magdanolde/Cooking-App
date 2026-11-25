@@ -198,3 +198,6 @@ select.input { appearance: auto; padding-right: 8px; }
 .shop-name { display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
 .shop-row.is-done { color: var(--muted); }
 .shop-row.is-done .shop-amount, .shop-row.is-done .shop-name > span:first-child { text-decoration: line-through; font-weight: 400; }
+
+/* Shown after saving a recipe */
+.saved-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: var(--tint); color: var(--green-dark); border-radius: 14px; padding: 10px 10px 10px 14px; }
