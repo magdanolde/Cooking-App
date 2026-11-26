@@ -101,7 +101,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 /* Floating button + bottom nav */
 .fab { position: fixed; right: max(20px, calc(50vw - 300px)); bottom: 96px; min-height: 56px; padding: 0 22px 0 18px; border-radius: 28px; background: var(--mint); color: var(--mint-ink); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; box-shadow: 0 6px 18px rgba(60, 140, 90, 0.3); }
 .fab:hover { color: var(--mint-ink); }
-.bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; height: calc(72px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); z-index: 10; }
+.bottom-nav { position: fixed; left: 0; right: 0; bottom: 0; height: calc(72px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); z-index: 10; }
 .bottom-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 500; }
 .bottom-nav a[aria-current='page'] { color: var(--green); font-weight: 600; }
 
@@ -201,3 +201,4 @@ select.input { appearance: auto; padding-right: 8px; }
 
 /* Shown after saving a recipe */
 .saved-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: var(--tint); color: var(--green-dark); border-radius: 14px; padding: 10px 10px 10px 14px; }
+.notice-warn { background: #fff4e0; color: #6b3f00; }

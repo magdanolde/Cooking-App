@@ -2,7 +2,7 @@
  * Builds a shopping list from the meals planned for a week.
  * Pure function: the planner page loads the data and passes it in.
  */
-import { formatValueUnit, type Ingredient } from './ingredients';
+import { formatValueUnit, unitKind, type Ingredient } from './ingredients';
 
 export type PlannedMeal = {
   recipeTitle: string;
@@ -31,9 +31,10 @@ export type ShoppingLine = {
 
 const MASS: Record<string, number> = { mg: 0.001, g: 1, kg: 1000 };
 const VOLUME: Record<string, number> = { ml: 1, cl: 10, dl: 100, l: 1000 };
-const SPOON_LIKE = new Set(['TL', 'EL', 'Prise', 'Msp.', 'Spritzer']);
-const TO_TASTE = new Set(['Prise', 'Msp.']);
 const COUNT_LIKE = new Set(['', 'Stück']);
+/** Spoons, pinches and dashes: small amounts you usually have at home */
+const isSpoonLike = (unit: string) => ['spoon', 'pinch'].includes(unitKind(unit)) || unit === 'Spritzer';
+const isToTaste = (unit: string) => unitKind(unit) === 'pinch';
 
 const PANTRY_WORDS = [
   'salz',
@@ -60,6 +61,16 @@ const PANTRY_WORDS = [
   'brühe',
   'backpulver',
   'natron',
+  'sól',
+  'soli',
+  'pieprz',
+  'olej',
+  'oliwa',
+  'cukier',
+  'mąka',
+  'mąki',
+  'ocet',
+  'przyprawa',
   'salt',
   'pepper',
   'oil',
@@ -84,7 +95,7 @@ export function nameKey(name: string): string {
 }
 
 export function isPantry(ing: Ingredient): boolean {
-  if (ing.quantity == null || SPOON_LIKE.has(ing.unit)) return true;
+  if (ing.quantity == null || isSpoonLike(ing.unit)) return true;
   const n = ing.name.toLowerCase();
   return PANTRY_WORDS.some((w) => n.includes(w));
 }
@@ -103,7 +114,7 @@ type Acc = {
 };
 
 function formatAcc(fam: string, baseUnit: string, lo: number, hi: number): string {
-  if (fam === 'count' || (!SPOON_LIKE.has(baseUnit) && fam !== 'mass' && fam !== 'volume')) {
+  if (fam === 'count' || (!isSpoonLike(baseUnit) && fam !== 'mass' && fam !== 'volume')) {
     // Pieces, cans, packs, bunches: round up so there is enough
     const n = Math.ceil(hi - 1e-9);
     return baseUnit ? `${n} ${baseUnit}` : String(n);
@@ -140,7 +151,7 @@ export function buildShoppingList(meals: PlannedMeal[]): ShoppingLine[] {
         acc.set(key, a);
       }
       const part = a.parts.get(meal.recipeTitle) ?? { lo: 0, hi: 0 };
-      if (ing.quantity == null || TO_TASTE.has(ing.unit)) {
+      if (ing.quantity == null || isToTaste(ing.unit)) {
         a.toTaste = true;
       } else {
         const lo = ing.quantity * factor * fam.toBase;

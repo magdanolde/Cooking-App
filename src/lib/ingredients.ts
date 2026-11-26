@@ -68,8 +68,33 @@ for (const [canonical, aliases] of UNIT_ALIASES) {
 
 export const KNOWN_UNITS = UNIT_ALIASES.map(([u]) => u);
 
-/** Amounts in these units stay as they are when a recipe is scaled. */
-const NON_SCALING_UNITS = new Set(['Prise', 'Msp.']);
+/** Units offered in the recipe form's dropdown, most used first. */
+export const UNIT_CHOICES = [
+  'g', 'kg', 'ml', 'l', 'EL', 'TL', 'Prise', 'Msp.', 'Stück', 'Zehe', 'Dose', 'Pck.', 'Bund', 'Scheibe',
+  'Becher', 'Glas', 'Tasse', 'Handvoll', 'Zweig', 'Spritzer', 'Würfel', 'cl', 'dl', 'mg', 'oz', 'lb',
+];
+
+/**
+ * Polish units are recognised but kept exactly as written ("3 łyżki" stays "3 łyżki"),
+ * because Polish plural forms can't be rebuilt from one canonical word.
+ */
+const POLISH_UNITS: Record<string, UnitKind> = {};
+const addPolish = (kind: UnitKind, words: string) => words.split(' ').forEach((w) => (POLISH_UNITS[w] = kind));
+addPolish('spoon', 'łyżka łyżki łyżek łyżkę łyżce łyżeczka łyżeczki łyżeczek łyżeczkę');
+addPolish('pinch', 'szczypta szczypty szczyptę szczypt');
+addPolish('other', 'szklanka szklanki szklanek szklankę ząbek ząbki ząbków sztuka sztuki sztuk szt szt. opakowanie opakowania opakowań puszka puszki puszek puszkę pęczek pęczki pęczków kostka kostki kostek kostkę plaster plastry plasterek plasterki garść garści gałązka gałązki słoik słoiki słoika torebka torebki');
+
+export type UnitKind = 'mass' | 'volume' | 'spoon' | 'pinch' | 'count' | 'other';
+
+/** What kind of unit this is, for scaling and the shopping list. */
+export function unitKind(unit: string): UnitKind {
+  if (['g', 'kg', 'mg', 'oz', 'lb'].includes(unit)) return unit === 'oz' || unit === 'lb' ? 'other' : 'mass';
+  if (['ml', 'cl', 'dl', 'l'].includes(unit)) return 'volume';
+  if (unit === 'EL' || unit === 'TL') return 'spoon';
+  if (unit === 'Prise' || unit === 'Msp.') return 'pinch';
+  if (unit === '' || unit === 'Stück') return 'count';
+  return POLISH_UNITS[unit.toLowerCase()] ?? 'other';
+}
 
 /** Turns "1½" into "1 1/2" and "½" into "1/2" so the number reader sees plain fractions. */
 function normalizeFractions(s: string): string {
@@ -157,12 +182,15 @@ export function parseIngredientLine(line: string): Ingredient {
 
   let unit = '';
   if (q) {
-    const tok = /^\s*([A-Za-zÄÖÜäöüß]+\.?)(?=\s|$|,)/.exec(rest);
+    const tok = /^\s*([A-Za-zÄÖÜäöüßąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+\.?)(?=\s|$|,)/.exec(rest);
     if (tok) {
       const candidate = tok[1].toLowerCase();
       const canonical = UNIT_LOOKUP.get(candidate) ?? UNIT_LOOKUP.get(candidate.replace(/\.$/, ''));
       if (canonical) {
         unit = canonical;
+        rest = rest.slice(tok[0].length);
+      } else if (POLISH_UNITS[candidate] || POLISH_UNITS[candidate.replace(/\.$/, '')]) {
+        unit = candidate;
         rest = rest.slice(tok[0].length);
       }
     }
@@ -284,7 +312,7 @@ export function formatValueUnit(lo: number, hi: number | null, unit: string, exa
 }
 
 export function isScalable(ing: Ingredient): boolean {
-  return ing.quantity != null && !NON_SCALING_UNITS.has(ing.unit);
+  return ing.quantity != null && unitKind(ing.unit) !== 'pinch';
 }
 
 /** The amount text for an ingredient at a given scale factor ("" when it has no amount). */

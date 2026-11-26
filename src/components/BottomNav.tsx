@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { BookIcon, CalendarIcon } from './icons';
+import { BookIcon, CalendarIcon, ListIcon } from './icons';
 
-export function BottomNav({ active }: { active: 'recipes' | 'plan' }) {
+export function BottomNav({ active }: { active: 'recipes' | 'plan' | 'shopping' }) {
   return (
     <nav className="bottom-nav" aria-label="Main">
       <Link href="/" aria-current={active === 'recipes' ? 'page' : undefined}>
@@ -11,6 +11,10 @@ export function BottomNav({ active }: { active: 'recipes' | 'plan' }) {
       <Link href="/plan" aria-current={active === 'plan' ? 'page' : undefined}>
         <CalendarIcon />
         Week plan
+      </Link>
+      <Link href="/plan/shopping" aria-current={active === 'shopping' ? 'page' : undefined}>
+        <ListIcon size={24} />
+        Shopping
       </Link>
     </nav>
   );

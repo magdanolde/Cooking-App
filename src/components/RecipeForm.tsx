@@ -3,8 +3,9 @@
 import { useActionState, useMemo, useRef, useState } from 'react';
 import { saveRecipeAction, type SaveState } from '@/app/recipes/actions';
 import type { RecipeDraft } from '@/lib/import';
-import { KNOWN_UNITS, parseIngredientBlock, parseQuantity, quantityToText, type Ingredient } from '@/lib/ingredients';
+import { parseIngredientBlock, parseQuantity, quantityToText, type Ingredient } from '@/lib/ingredients';
 import { PlusIcon, XIcon } from './icons';
+import { UnitField } from './UnitField';
 
 type Row = { key: string; quantityText: string; unit: string; name: string; note: string; group: string };
 type StepRow = { key: string; text: string };
@@ -166,12 +167,6 @@ export function RecipeForm({ initial, id, submitLabel = 'Save recipe' }: { initi
           </div>
         )}
 
-        <datalist id="units">
-          {KNOWN_UNITS.map((u) => (
-            <option key={u} value={u} />
-          ))}
-        </datalist>
-
         <div className="card stack" style={{ padding: '10px 12px', gap: 8 }}>
           <div className="ing-head" aria-hidden="true">
             <span>Amount</span>
@@ -194,13 +189,7 @@ export function RecipeForm({ initial, id, submitLabel = 'Save recipe' }: { initi
                     onChange={(e) => updateRow(r.key, { quantityText: e.target.value })}
                     style={{ fontWeight: 600 }}
                   />
-                  <input
-                    className="input input-sm"
-                    aria-label={`Unit, ${label}`}
-                    list="units"
-                    value={r.unit}
-                    onChange={(e) => updateRow(r.key, { unit: e.target.value })}
-                  />
+                  <UnitField label={`Unit, ${label}`} value={r.unit} onChange={(unit) => updateRow(r.key, { unit })} />
                   <input
                     className="input input-sm"
                     aria-label="Ingredient"
